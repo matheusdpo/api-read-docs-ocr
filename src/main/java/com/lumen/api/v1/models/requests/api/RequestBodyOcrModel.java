@@ -1,4 +1,4 @@
-package com.lumen.api.v1.models;
+package com.lumen.api.v1.models.requests.api;
 
 public class RequestBodyOcrModel {
     private String country;
