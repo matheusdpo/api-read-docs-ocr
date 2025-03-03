@@ -2,14 +2,21 @@ package com.lumen.api.v1.utils;
 
 import com.lumen.api.v1.enums.CountriesEnum;
 import com.lumen.api.v1.enums.DocumentTypeEnum;
-import com.lumen.api.v1.models.RequestBodyOcrModel;
+import com.lumen.api.v1.models.requests.api.RequestBodyOcrModel;
+import com.lumen.api.v1.services.DocumentServices;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+@Component
 public class CheckModelsUtils {
 
-    public static boolean isRequestParamsOcrNullOrEmpty(RequestBodyOcrModel requestBodyOcrModel) {
+    @Autowired
+    private DocumentServices documentServices;
+
+    public boolean isRequestParamsOcrNullOrEmpty(RequestBodyOcrModel requestBodyOcrModel) {
         if (Objects.isNull(requestBodyOcrModel.getCountry()) || StringUtils.isEmpty(requestBodyOcrModel.getCountry())) {
             return true;
         }
@@ -25,17 +32,10 @@ public class CheckModelsUtils {
         return false;
     }
 
-    public static boolean isValidDocumentForCountry(String documentType, String country) {
-        // Converte os valores para o formato do enum
+    public boolean isValidDocumentForCountry(String documentType, String country) {
         DocumentTypeEnum docType = DocumentTypeEnum.valueOf(documentType.toUpperCase());
         CountriesEnum countryEnum = CountriesEnum.valueOf(country.toUpperCase());
 
-        // Valida as combinações de documento e país
-        return switch (countryEnum) {
-            case BRAZIL -> docType == DocumentTypeEnum.RG || docType == DocumentTypeEnum.CPF;
-            case USA, CANADA -> docType == DocumentTypeEnum.ID || docType == DocumentTypeEnum.PASSPORT;
-            default -> false;
-        };
-
+        return documentServices.isDocumentTypeAndCountry(docType.getValue(), countryEnum.getValue());
     }
 }
