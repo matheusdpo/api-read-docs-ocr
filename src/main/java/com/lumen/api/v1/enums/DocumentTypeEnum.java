@@ -4,6 +4,7 @@ public enum DocumentTypeEnum {
 
     RG("RG"),
     CPF("CPF"),
+    CNH("CNH"),
     ID("ID"),
     DNI("DNI"),
     PASSPORT("PASSPORT");
