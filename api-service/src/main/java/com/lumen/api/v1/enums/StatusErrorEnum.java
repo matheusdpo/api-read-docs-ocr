@@ -8,7 +8,9 @@ public enum StatusErrorEnum {
     DOC_IS_NOT_VALID(4, "Document type is not valid for this country"),
     DOC_MODEL_NOT_FOUND(5, "Document model not found"),
     BASE64_ERROR(6, "Error on encode image to base64"),
-    UNKOWN_ERROR(99, "Unknown error");
+    UNKOWN_ERROR(99, "Unknown error"),
+    API_KEY_IS_REQUIRED(7, "API Key is required"),
+    API_KEY_IS_NOT_VALID(8, "API Key is not valid");
 
     StatusErrorEnum(Integer id, String errorMessage) {
         this.id = id;
