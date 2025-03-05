@@ -5,7 +5,8 @@ import com.lumen.api.v1.enums.CountriesEnum;
 import com.lumen.api.v1.enums.DocumentTypeEnum;
 import com.lumen.api.v1.enums.StatusErrorEnum;
 import com.lumen.api.v1.models.responses.api.ResponseErrorApiModel;
-import com.lumen.api.v1.services.DocumentServices;
+import com.lumen.api.v1.services.ApiKeyService;
+import com.lumen.api.v1.services.DocumentService;
 import com.lumen.api.v1.services.GeminiService;
 import com.lumen.api.v1.utils.Base64Utils;
 import com.lumen.api.v1.utils.LogUtils;
@@ -16,11 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/api/v1")
@@ -30,7 +30,10 @@ public class ApiController {
     private GeminiService geminiService;
 
     @Autowired
-    private DocumentServices documentServices;
+    private DocumentService documentService;
+
+    @Autowired
+    private ApiKeyService apiKeyService;
 
     @Autowired
     private Base64Utils base64Utils;
@@ -39,10 +42,20 @@ public class ApiController {
     private LogUtils logger;
 
     @PostMapping()
-    public ResponseEntity<?> init(@RequestPart("file") @NotNull MultipartFile file,
+    public ResponseEntity<?> init(@RequestHeader(value = "X-API-KEY", required = false) String apiKey,
+                                  @RequestPart("file") @NotNull MultipartFile file,
                                   @RequestParam("country") @NotNull @NotEmpty String country,
                                   @RequestParam("docType") @NotNull @NotEmpty String docType) {
         try {
+            if (Objects.isNull(apiKey) || apiKey.isBlank()) {
+                return buildErrorResponse(StatusErrorEnum.API_KEY_IS_REQUIRED, HttpStatus.BAD_REQUEST);
+            }
+
+            if (!apiKeyService.isApiKeyValid(apiKey)) {
+                return buildErrorResponse(StatusErrorEnum.API_KEY_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+            }
+
+
             if (!CountriesEnum.isCountryEqualsEnum(country)) {
                 return buildErrorResponse(StatusErrorEnum.COUNTRY_IS_NOT_AVAILABLE, HttpStatus.BAD_REQUEST);
             }
@@ -51,7 +64,7 @@ public class ApiController {
                 return buildErrorResponse(StatusErrorEnum.DOC_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
             }
 
-            if (!documentServices.isDocumentTypeAndCountry(docType, country)) {
+            if (!documentService.isDocumentTypeAndCountry(docType, country)) {
                 return buildErrorResponse(StatusErrorEnum.DOC_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
             }
 
