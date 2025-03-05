@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class DocumentServices {
+public class DocumentService {
 
     @Autowired
     private DocumentDBRepository documentDBRepository;
