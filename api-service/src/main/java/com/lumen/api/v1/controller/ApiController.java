@@ -7,7 +7,7 @@ import com.lumen.api.v1.enums.StatusErrorEnum;
 import com.lumen.api.v1.models.responses.api.ResponseErrorApiModel;
 import com.lumen.api.v1.services.ApiKeyService;
 import com.lumen.api.v1.services.DocumentService;
-import com.lumen.api.v1.services.GeminiService;
+import com.lumen.api.v1.services.LumenAPIService;
 import com.lumen.api.v1.utils.Base64Utils;
 import com.lumen.api.v1.utils.LogUtils;
 import jakarta.validation.constraints.NotEmpty;
@@ -27,7 +27,7 @@ import java.util.Objects;
 public class ApiController {
 
     @Autowired
-    private GeminiService geminiService;
+    private LumenAPIService lumenAPIService;
 
     @Autowired
     private DocumentService documentService;
@@ -70,20 +70,22 @@ public class ApiController {
 
             String imageBase64 = base64Utils.encode(file);
 
+            String mimeType = file.getContentType();
+
             if (imageBase64.isEmpty()) {
                 return buildErrorResponse(StatusErrorEnum.BASE64_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-            JsonNode response = geminiService.getResponseBody(
+            JsonNode response = lumenAPIService.getResponseBody(
                     imageBase64,
                     docType,
+                    mimeType,
                     country
             );
 
             return ResponseEntity
                     .status(HttpStatusCode.valueOf(200))
                     .body(response);
-
         } catch (Exception e) {
             logger.error("Error in ControllerApi", e);
             return buildErrorResponse(StatusErrorEnum.UNKOWN_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
