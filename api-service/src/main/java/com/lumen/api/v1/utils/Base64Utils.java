@@ -20,23 +20,11 @@ public class Base64Utils {
     private FileUtils fileUtils;
 
     public String encode(MultipartFile path) throws IOException {
-
         File file = fileUtils.convert(path);
-
-        String extension = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf(".") + 1);
-
-        String prefixBase64 = switch (extension) {
-            case "png" -> "data:image/png;base64,";
-            case "jpg" -> "data:image/jpg;base64,";
-            case "jpeg" -> "data:image/jpg;base64,";
-            case "pdf" -> "data:application/pdf;base64,";
-            default -> throw new IllegalStateException("Unexpected value: " + path);
-        };
-
 
         try (FileInputStream fileInputStream = new FileInputStream(file.getAbsolutePath())) {
             byte[] bytes = fileInputStream.readAllBytes();
-            return prefixBase64 + Base64.getEncoder().encodeToString(bytes);
+            return  Base64.getEncoder().encodeToString(bytes);
         } catch (FileNotFoundException e) {
             logger.error("Arquivo não encontrado", e);
             return "";
@@ -44,5 +32,9 @@ public class Base64Utils {
             logger.error("Erro ao ler arquivo", e);
             return "";
         }
+    }
+
+    public byte[] decode(String base64Data) {
+        return Base64.getDecoder().decode(base64Data);
     }
 }
