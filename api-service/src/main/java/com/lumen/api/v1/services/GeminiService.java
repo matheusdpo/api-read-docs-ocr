@@ -15,8 +15,11 @@ public class GeminiService {
     @Value("${gemini.api.key}")
     private String geminiApiKey;
 
-    @Value("${gemini.api.prompt}")
-    private String geminiApiPrompt;
+    @Value("${gemini.api.prompt.read-docs}")
+    private String geminiApiReadDocsPrompt;
+
+    @Value("${gemini.api.prompt.check-signature}")
+    private String geminiApiCheckSignaturePrompt;
 
     @Value("${gemini.api.v1.package}")
     private String geminiApiPackage;
@@ -36,7 +39,11 @@ public class GeminiService {
         return this.geminiApiPackage;
     }
 
-    public String getGeminiApiPrompt() {
-        return this.geminiApiPrompt;
+    public String getGeminiApiReadDocsPrompt() {
+        return this.geminiApiReadDocsPrompt;
+    }
+
+    public String getGeminiApiCheckSignaturePrompt() {
+        return this.geminiApiCheckSignaturePrompt;
     }
 }

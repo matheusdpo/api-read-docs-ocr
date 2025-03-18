@@ -10,7 +10,8 @@ public enum StatusErrorEnum {
     BASE64_ERROR(6, "Error on encode image to base64"),
     UNKOWN_ERROR(99, "Unknown error"),
     API_KEY_IS_REQUIRED(7, "API Key is required"),
-    API_KEY_IS_NOT_VALID(8, "API Key is not valid");
+    API_KEY_IS_NOT_VALID(8, "API Key is not valid"),
+    FILE_IS_EMPTY(9, "File is empty");
 
     StatusErrorEnum(Integer id, String errorMessage) {
         this.id = id;

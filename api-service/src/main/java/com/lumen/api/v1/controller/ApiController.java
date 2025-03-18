@@ -41,7 +41,7 @@ public class ApiController {
     @Autowired
     private LogUtils logger;
 
-    @PostMapping()
+    @PostMapping("/read-docs")
     public ResponseEntity<?> init(@RequestHeader(value = "X-API-KEY", required = false) String apiKey,
                                   @RequestPart("file") @NotNull MultipartFile file,
                                   @RequestParam("country") @NotNull @NotEmpty String country,
@@ -55,6 +55,9 @@ public class ApiController {
                 return buildErrorResponse(StatusErrorEnum.API_KEY_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
             }
 
+            if (file.isEmpty()) {
+                return buildErrorResponse(StatusErrorEnum.FILE_IS_EMPTY, HttpStatus.BAD_REQUEST);
+            }
 
             if (!CountriesEnum.isCountryEqualsEnum(country)) {
                 return buildErrorResponse(StatusErrorEnum.COUNTRY_IS_NOT_AVAILABLE, HttpStatus.BAD_REQUEST);
@@ -76,12 +79,54 @@ public class ApiController {
                 return buildErrorResponse(StatusErrorEnum.BASE64_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-            JsonNode response = lumenAPIService.getResponseBody(
+            JsonNode response = lumenAPIService.getReadDocsResponseBody(
                     imageBase64,
                     docType,
                     mimeType,
                     country
             );
+
+            logger.info("Response: " + response);
+
+            return ResponseEntity
+                    .status(HttpStatusCode.valueOf(200))
+                    .body(response);
+        } catch (Exception e) {
+            logger.error("Error in ControllerApi", e);
+            return buildErrorResponse(StatusErrorEnum.UNKOWN_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/check-signature")
+    private ResponseEntity<?> checkSignature(@RequestHeader(value = "X-API-KEY", required = false) String apiKey,
+                                             @RequestPart("file") @NotNull MultipartFile file) {
+        try {
+            if (Objects.isNull(apiKey) || apiKey.isBlank()) {
+                return buildErrorResponse(StatusErrorEnum.API_KEY_IS_REQUIRED, HttpStatus.BAD_REQUEST);
+            }
+
+            if (!apiKeyService.isApiKeyValid(apiKey)) {
+                return buildErrorResponse(StatusErrorEnum.API_KEY_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+            }
+
+            if (file.isEmpty()) {
+                return buildErrorResponse(StatusErrorEnum.FILE_IS_EMPTY, HttpStatus.BAD_REQUEST);
+            }
+
+            String imageBase64 = base64Utils.encode(file);
+
+            String mimeType = file.getContentType();
+
+            if (imageBase64.isEmpty()) {
+                return buildErrorResponse(StatusErrorEnum.BASE64_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            JsonNode response = lumenAPIService.getCheckSignatureResponseBody(
+                    imageBase64,
+                    mimeType
+            );
+
+            logger.info("Response: " + response);
 
             return ResponseEntity
                     .status(HttpStatusCode.valueOf(200))

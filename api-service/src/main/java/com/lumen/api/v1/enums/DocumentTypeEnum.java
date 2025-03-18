@@ -6,7 +6,11 @@ public enum DocumentTypeEnum {
     CPF("CPF"),
     CNH("CNH"),
     ID("ID"),
-    DNI("DNI"),
+    CIN("CIN"),
+    CTPS("CTPS"),
+    TITULO("TITULO"),
+    CERTIDAONASCIMENTO("CERTIDAONASCIMENTO"),
+    CARTAOMILITAR("CARTAOMILITAR"),
     PASSPORT("PASSPORT");
 
     private final String document;
