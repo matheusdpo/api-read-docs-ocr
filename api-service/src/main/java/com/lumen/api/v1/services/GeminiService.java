@@ -28,7 +28,7 @@ public class GeminiService {
     private JsonUtils jsonUtils;
 
     public String getResponseBodyStr(String base64, String prompt, String mimeType) throws Exception {
-        String body = jsonUtils.createGeminiJson(base64, prompt, mimeType);
+        String body = jsonUtils.jsonGeminiBuilder(base64, prompt, mimeType);
         return httpUnirestUtils.post(geminiApiUrl, geminiApiKey, body).getBody();
     }
 
