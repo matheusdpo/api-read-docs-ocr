@@ -42,7 +42,17 @@ public class LumenAPIService {
 
         GeminiResponse geminiResponse = serializationUtils.fromJson2Class(responseBody, GeminiResponse.class);
 
-        return serializationUtils.serializeToJson(geminiResponse.getCandidates().getFirst().getContent().getParts().getFirst().getText());
+        return serializationUtils.serializeToJson(
+                geminiResponse.getCandidates()
+                        .getFirst()
+                        .getContent()
+                        .getParts()
+                        .getFirst()
+                        .getText()
+                        .replaceAll("`", "")
+                        .replaceAll("json", "")
+                        .trim()
+        );
     }
 
     private boolean isClassExists(String className) {
