@@ -2,6 +2,7 @@ package com.lumen.api.v1.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.lumen.api.v1.exceptions.GeminiException;
+import com.lumen.api.v1.models.ResponseOcrModel;
 import com.lumen.api.v1.models.responses.api.ResponseCheckSignatureModel;
 import com.lumen.api.v1.models.responses.gemini.GeminiResponse;
 import com.lumen.api.v1.utils.SerializationUtils;
@@ -60,6 +61,29 @@ public class LumenAPIService {
         ResponseCheckSignatureModel responseCheckSignatureModel = new ResponseCheckSignatureModel();
 
         String prompt = String.format(geminiService.getGeminiApiCheckSignaturePrompt(), responseCheckSignatureModel.toString());
+
+        String responseBody = geminiService.getResponseBodyStr(base64, prompt, mimeType);
+
+        GeminiResponse geminiResponse = serializationUtils.fromJson2Class(responseBody, GeminiResponse.class);
+
+        return serializationUtils.serializeToJson(
+                geminiResponse.getCandidates()
+                        .getFirst()
+                        .getContent()
+                        .getParts()
+                        .getFirst()
+                        .getText()
+                        .replaceAll("`", "")
+                        .replaceAll("json", "")
+                        .trim()
+        );
+    }
+
+
+    public JsonNode getOcrResponseBody(String base64, String mimeType) throws Exception {
+        ResponseOcrModel responseCheckSignatureModel = new ResponseOcrModel();
+
+        String prompt = String.format(geminiService.getGeminiApiOcrPrompt(), responseCheckSignatureModel.toString());
 
         String responseBody = geminiService.getResponseBodyStr(base64, prompt, mimeType);
 
