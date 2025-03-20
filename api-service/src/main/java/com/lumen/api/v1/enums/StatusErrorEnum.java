@@ -11,7 +11,8 @@ public enum StatusErrorEnum {
     UNKOWN_ERROR(99, "Unknown error"),
     API_KEY_IS_REQUIRED(7, "API Key is required"),
     API_KEY_IS_NOT_VALID(8, "API Key is not valid"),
-    FILE_IS_EMPTY(9, "File is empty");
+    FILE_IS_EMPTY(9, "File is empty"),
+    FILE_SIZE_IS_NOT_VALID(10, "File size is not valid");
 
     StatusErrorEnum(Integer id, String errorMessage) {
         this.id = id;
