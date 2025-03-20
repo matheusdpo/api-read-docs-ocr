@@ -51,6 +51,14 @@ public class AuthController {
             return ResponseEntity.status(400).body("Usuário já existe!");
         }
 
+        if (userRepository.findByEmail(userEntity.getEmail()).isPresent()) {
+            return ResponseEntity.status(400).body("Email já cadastrado!");
+        }
+
+        if (userRepository.findByPhone(userEntity.getPhone()).isPresent()) {
+            return ResponseEntity.status(400).body("Telefone já cadastrado!");
+        }
+
         // Codificar a senha antes de salvar
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
         userRepository.save(userEntity);
