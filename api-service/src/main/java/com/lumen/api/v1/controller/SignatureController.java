@@ -1,8 +1,6 @@
 package com.lumen.api.v1.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.lumen.api.v1.enums.CountriesEnum;
-import com.lumen.api.v1.enums.DocumentTypeEnum;
 import com.lumen.api.v1.enums.StatusErrorEnum;
 import com.lumen.api.v1.models.responses.api.ResponseErrorApiModel;
 import com.lumen.api.v1.services.ApiKeyService;
@@ -10,14 +8,16 @@ import com.lumen.api.v1.services.DocumentService;
 import com.lumen.api.v1.services.LumenAPIService;
 import com.lumen.api.v1.utils.Base64Utils;
 import com.lumen.api.v1.utils.LogUtils;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
@@ -59,6 +59,10 @@ public class SignatureController {
 
             if (!documentService.isDocumentSizeValid(file.getSize())) {
                 return buildErrorResponse(StatusErrorEnum.FILE_SIZE_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+            }
+
+            if (!documentService.isExtensionValid(file.getOriginalFilename())) {
+                return buildErrorResponse(StatusErrorEnum.FILE_EXTENSION_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
             }
 
             String imageBase64 = base64Utils.encode(file);

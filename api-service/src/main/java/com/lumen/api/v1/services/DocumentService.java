@@ -28,4 +28,11 @@ public class DocumentService {
     public boolean isDocumentSizeValid(Long size) {
         return size <= documentSizeMaxMb;
     }
+
+    public boolean isExtensionValid(String originalFilename) {
+        return originalFilename.endsWith(".jpg") ||
+                originalFilename.endsWith(".jpeg") ||
+                originalFilename.endsWith(".png") ||
+                originalFilename.endsWith(".pdf");
+    }
 }

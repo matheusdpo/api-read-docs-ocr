@@ -75,6 +75,10 @@ public class ReadDocsController {
                 return buildErrorResponse(StatusErrorEnum.FILE_SIZE_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
             }
 
+            if (!documentService.isExtensionValid(file.getOriginalFilename())) {
+                return buildErrorResponse(StatusErrorEnum.FILE_EXTENSION_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+            }
+
             String imageBase64 = base64Utils.encode(file);
 
             String mimeType = file.getContentType();
