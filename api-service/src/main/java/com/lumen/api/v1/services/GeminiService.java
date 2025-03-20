@@ -21,6 +21,9 @@ public class GeminiService {
     @Value("${gemini.api.prompt.check-signature}")
     private String geminiApiCheckSignaturePrompt;
 
+    @Value("${gemini.api.prompt.ocr}")
+    private String geminiApiOcrPrompt;
+
     @Value("${gemini.api.v1.package}")
     private String geminiApiPackage;
 
@@ -45,5 +48,9 @@ public class GeminiService {
 
     public String getGeminiApiCheckSignaturePrompt() {
         return this.geminiApiCheckSignaturePrompt;
+    }
+
+    public String getGeminiApiOcrPrompt() {
+        return this.geminiApiOcrPrompt;
     }
 }
