@@ -1,6 +1,5 @@
 package com.lumen.auth.v1.controller;
 
-
 import com.lumen.auth.v1.entities.ApiKeyEntity;
 import com.lumen.auth.v1.entities.UserEntity;
 import com.lumen.auth.v1.repositories.ApiKeyRepository;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     @Autowired
