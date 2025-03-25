@@ -6,19 +6,63 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Entity representing a user in the database.
+ * This class is used by Spring Security to authenticate users.
+ * You can add roles/authorities if necessary.
+ * @author matheusdpo
+ * @version 1.0.0
+ * @since 2025-03
+ */
 @Entity
 @Table(name = "users")
 public class UserEntity {
+
+    /**
+     * User ID.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * User name.
+     */
     private String name;
+
+    /**
+     * User last name.
+     */
     private String lastName;
+
+    /**
+     * User username.
+     */
     private String username;
+
+    /**
+     * User email.
+     */
     private String email;
+
+    /**
+     * User phone.
+     */
     private String phone;
+
+    /**
+     * User password.
+     */
     private String password;
+
+    /**
+     * User date of birth.
+     */
     private String dateOfBirth;
+
+    /**
+     * User country.
+     */
     private String country;
 
     public Long getId() {

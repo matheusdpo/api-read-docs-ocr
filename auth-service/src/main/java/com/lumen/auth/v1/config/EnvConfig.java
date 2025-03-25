@@ -4,13 +4,16 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Classe de configuração para variáveis de ambiente
+ * Class to load environment variables from .env file
+ * @author matheusdpo
+ * @since 2025-03
+ * @version 1.0.0
  */
 @Configuration
 public class EnvConfig {
 
     /**
-     * Carrega as variáveis de ambiente do arquivo .env
+     * Load environment variables from .env file
      */
     public static void loadEnv() {
         Dotenv dotenv = Dotenv.configure().load();
