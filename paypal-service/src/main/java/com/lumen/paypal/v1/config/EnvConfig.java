@@ -1,4 +1,4 @@
-package br.com.lumen.paypal.v1.config;
+package com.lumen.paypal.v1.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Configuration;

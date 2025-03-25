@@ -1,4 +1,4 @@
-package br.com.lumen.paypal.v1.config;
+package com.lumen.paypal.v1.config;
 
 import com.paypal.base.rest.APIContext;
 import org.springframework.beans.factory.annotation.Value;

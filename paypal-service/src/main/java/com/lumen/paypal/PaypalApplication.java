@@ -1,6 +1,6 @@
-package br.com.lumen.paypal;
+package com.lumen.paypal;
 
-import br.com.lumen.paypal.v1.config.EnvConfig;
+import com.lumen.paypal.v1.config.EnvConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

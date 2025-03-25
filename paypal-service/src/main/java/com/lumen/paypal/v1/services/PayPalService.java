@@ -1,4 +1,4 @@
-package br.com.lumen.paypal.v1.services;
+package com.lumen.paypal.v1.services;
 
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;

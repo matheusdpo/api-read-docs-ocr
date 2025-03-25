@@ -1,4 +1,4 @@
-package br.com.lumen.paypal.v1.config;
+package com.lumen.paypal.v1.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

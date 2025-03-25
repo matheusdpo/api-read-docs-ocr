@@ -1,4 +1,4 @@
-package br.com.lumen.paypal.v1.utils;
+package com.lumen.paypal.v1.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package br.com.lumen.paypal.v1.thymeleaf.model;
+package com.lumen.paypal.v1.thymeleaf.model;
 
 public class Product {
     int id;
