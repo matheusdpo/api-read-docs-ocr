@@ -2,6 +2,7 @@ package com.lumen.auth.v1.controller;
 
 import com.lumen.auth.v1.entities.ApiKeyEntity;
 import com.lumen.auth.v1.entities.UserEntity;
+import com.lumen.auth.v1.enums.ApiKeyStatusEnum;
 import com.lumen.auth.v1.repositories.ApiKeyRepository;
 import com.lumen.auth.v1.repositories.UserRepository;
 import com.lumen.auth.v1.utils.JwtUtils;
@@ -174,6 +175,12 @@ public class AuthController {
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+        List<ApiKeyEntity> apiKeyEntityList = apiKeyRepository.findByUserEntityAndStatusKey(userEntity, ApiKeyStatusEnum.ONLINE.getStatusApiKey());
+
+        if (apiKeyEntityList.size() >= 5) {
+            return ResponseEntity.status(400).body("Your account already has 5 API keys. Please delete one before creating a new one.");
+        }
+
         //generate random API key
         String apiKey = UUID.randomUUID().toString();
 
@@ -196,7 +203,8 @@ public class AuthController {
     @DeleteMapping("/api-key/{key}")
     public ResponseEntity<String> deleteApiKey(@PathVariable String key) {
         //delete API key by key
-        apiKeyRepository.deleteById(key);
+//        apiKeyRepository.deleteById(key);
+        apiKeyRepository.updateStatusKey(key, ApiKeyStatusEnum.OFFLINE.getStatusApiKey());
 
         //return success message
         return ResponseEntity.ok("API Key has been deleted successfully");
@@ -219,6 +227,6 @@ public class AuthController {
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow();
 
         //return list of API keys for the user
-        return ResponseEntity.ok(apiKeyRepository.findByUserEntity(userEntity));
+        return ResponseEntity.ok(apiKeyRepository.findAllByUserEntityAndStatusKey(userEntity, ApiKeyStatusEnum.ONLINE.getStatusApiKey()));
     }
 }
