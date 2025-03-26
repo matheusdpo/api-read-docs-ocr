@@ -1,6 +1,8 @@
 package com.lumen.auth.v1.entities;
 
+import com.lumen.auth.v1.enums.ApiKeyStatusEnum;
 import jakarta.persistence.*;
+
 import java.util.Date;
 
 /**
@@ -41,6 +43,12 @@ public class ApiKeyEntity {
     private Date expiresAt;
 
     /**
+     * Status of the API key
+     */
+    @Column(name = "status_key")
+    private String statusKey = ApiKeyStatusEnum.ONLINE.getStatusApiKey();
+
+    /**
      * Default constructor
      */
     public ApiKeyEntity() {
@@ -48,7 +56,8 @@ public class ApiKeyEntity {
 
     /**
      * Constructor with key and user
-     * @param key API key
+     *
+     * @param key        API key
      * @param userEntity User that owns the API key
      */
     public ApiKeyEntity(String key, UserEntity userEntity) {
@@ -59,6 +68,7 @@ public class ApiKeyEntity {
 
     /**
      * Get the API key
+     *
      * @return API key
      */
     public String getKey() {
@@ -67,6 +77,7 @@ public class ApiKeyEntity {
 
     /**
      * Set the API key
+     *
      * @param key API key
      */
     public void setKey(String key) {
@@ -75,6 +86,7 @@ public class ApiKeyEntity {
 
     /**
      * Get the user that owns the API key
+     *
      * @return User that owns the API key
      */
     public UserEntity getUserEntity() {
@@ -83,6 +95,7 @@ public class ApiKeyEntity {
 
     /**
      * Set the user that owns the API key
+     *
      * @param userEntity User that owns the API key
      */
     public void setUserEntity(UserEntity userEntity) {
@@ -91,6 +104,7 @@ public class ApiKeyEntity {
 
     /**
      * Get the date when the API key was created
+     *
      * @return Date when the API key was created
      */
     public Date getCreatedAt() {
@@ -99,6 +113,7 @@ public class ApiKeyEntity {
 
     /**
      * Set the date when the API key was created
+     *
      * @param createdAt Date when the API key was created
      */
     public void setCreatedAt(Date createdAt) {
@@ -107,6 +122,7 @@ public class ApiKeyEntity {
 
     /**
      * Get the date when the API key expires
+     *
      * @return Date when the API key expires
      */
     public Date getExpiresAt() {
@@ -115,9 +131,26 @@ public class ApiKeyEntity {
 
     /**
      * Set the date when the API key expires
+     *
      * @param expiresAt Date when the API key expires
      */
     public void setExpiresAt(Date expiresAt) {
         this.expiresAt = expiresAt;
+    }
+
+    /**
+     * Get the status of the API key
+     * @return the status of the API key
+     */
+    public String getStatusKey() {
+        return statusKey;
+    }
+
+    /**
+     * Set the status of the API key
+     * @param statusKey the status of the API key
+     */
+    public void setStatusKey(String statusKey) {
+        this.statusKey = statusKey;
     }
 }
