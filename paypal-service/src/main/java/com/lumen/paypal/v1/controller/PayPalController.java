@@ -65,8 +65,8 @@ public class PayPalController {
 
             String dbIdUrl = "?paymentDbId=" + paymentRecord.getId();
 
-            String sucessUrl = "http://localhost:8082/payment/success" + dbIdUrl;
-            String cancelUrl = "http://localhost:8082/payment/cancel" + dbIdUrl;
+            String sucessUrl = "http://localhost:8082/api/v1/paypal/payment/success" + dbIdUrl;
+            String cancelUrl = "http://localhost:8082/api/v1/paypal/payment/cancel" + dbIdUrl;
 
             Payment payment = payPalService.createPayment(amount,
                     currency,
@@ -98,19 +98,19 @@ public class PayPalController {
     @GetMapping("/payment/success")
     public ResponseEntity<?> paymentSuccess(
             @RequestParam String paymentId,
-            @RequestParam String payerId,
+            @RequestParam String PayerID,
             @RequestParam Long paymentDbId) {
 
         PaymentsEntity paymentRecord = paymentsRepository.findById(paymentDbId)
                 .orElseThrow(() -> new PayPalServiceException("Payment record not found"));
 
         try {
-            logger.info(String.format("Payment success: PaymentId: %s, PayerId: %s", paymentId, payerId));
+            logger.info(String.format("Payment success: PaymentId: %s, PayerId: %s", paymentId, PayerID));
 
-            Payment payment = payPalService.executePayment(paymentId, payerId);
+            Payment payment = payPalService.executePayment(paymentId, PayerID);
 
-            paymentRecord.setPaymentStatus(payment.getState());
-            paymentRecord.setPayerId(payerId);
+            paymentRecord.setPaymentStatus(payment.getState().toUpperCase());
+            paymentRecord.setPayerId(PayerID);
             paymentRecord.setProcessingDate(LocalDateTime.now());
 
             paymentsRepository.save(paymentRecord);
@@ -119,7 +119,7 @@ public class PayPalController {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
 
-            paymentRecord.setPaymentStatus(PaymentStatusEnum.CANCELLED.getPaymentStatus());
+            paymentRecord.setPaymentStatus(PaymentStatusEnum.ERROR.getPaymentStatus());
             paymentsRepository.save(paymentRecord);
 
             return ResponseEntity
@@ -130,10 +130,11 @@ public class PayPalController {
 
     @GetMapping("/payment/cancel")
     public ResponseEntity<?> paymentCancel(@RequestParam Long paymentDbId) {
+        logger.info("Payment cancelled");
         PaymentsEntity paymentRecord = paymentsRepository.findById(paymentDbId)
                 .orElseThrow(() -> new PayPalServiceException("Payment record not found"));
 
-        paymentRecord.setPaymentStatus("CANCELLED");
+        paymentRecord.setPaymentStatus(PaymentStatusEnum.CANCELLED.getPaymentStatus());
         paymentRecord.setProcessingDate(LocalDateTime.now());
         paymentsRepository.save(paymentRecord);
 
