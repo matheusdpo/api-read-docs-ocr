@@ -25,6 +25,8 @@
         <module>auth-service</module>
         <module>api-service</module>
         <module>paypal-service</module>
+        <module>billing-service</module>
+        <module>mailsender-service</module>
     </modules>
     <scm>
         <connection/>
