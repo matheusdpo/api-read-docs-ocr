@@ -1,6 +1,5 @@
 package com.lumen.auth.v1.entities;
 
-import com.lumen.auth.v1.enums.ApiKeyStatusEnum;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -46,7 +45,7 @@ public class ApiKeyEntity {
      * Status of the API key
      */
     @Column(name = "status_key")
-    private String statusKey = ApiKeyStatusEnum.ONLINE.getStatusApiKey();
+    private boolean statusKey = true;
 
     /**
      * Default constructor
@@ -142,7 +141,7 @@ public class ApiKeyEntity {
      * Get the status of the API key
      * @return the status of the API key
      */
-    public String getStatusKey() {
+    public boolean isStatusKey() {
         return statusKey;
     }
 
@@ -150,7 +149,7 @@ public class ApiKeyEntity {
      * Set the status of the API key
      * @param statusKey the status of the API key
      */
-    public void setStatusKey(String statusKey) {
+    public void setStatusKey(boolean statusKey) {
         this.statusKey = statusKey;
     }
 }
