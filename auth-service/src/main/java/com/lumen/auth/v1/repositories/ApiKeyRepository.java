@@ -42,7 +42,7 @@ public interface ApiKeyRepository extends JpaRepository<ApiKeyEntity, String> {
      * @param statusKey - status key to find {@link ApiKeyEntity} by it
      * @return List of {@link ApiKeyEntity}
      */
-    List<ApiKeyEntity> findByUserEntityAndStatusKey(UserEntity userEntity, String statusKey);
+    List<ApiKeyEntity> findByUserEntityAndStatusKey(UserEntity userEntity, boolean statusKey);
 
     /**
      * Update the status of an API key
@@ -53,7 +53,7 @@ public interface ApiKeyRepository extends JpaRepository<ApiKeyEntity, String> {
     @Modifying
     @Transactional
     @Query("UPDATE ApiKeyEntity a SET a.statusKey = :statusKey WHERE a.key = :key")
-    void updateStatusKey(@Param("key") String key, @Param("statusKey") String statusKey);
+    void updateStatusKey(@Param("key") String key, @Param("statusKey") boolean statusKey);
 
 
     /**
@@ -62,5 +62,5 @@ public interface ApiKeyRepository extends JpaRepository<ApiKeyEntity, String> {
      * @param statusKey - status key to find {@link ApiKeyEntity} by it
      * @return List of {@link ApiKeyEntity}
      */
-    List<ApiKeyEntity> findAllByUserEntityAndStatusKey(UserEntity userEntity, String statusKey);
+    List<ApiKeyEntity> findAllByUserEntityAndStatusKey(UserEntity userEntity, boolean statusKey);
 }
