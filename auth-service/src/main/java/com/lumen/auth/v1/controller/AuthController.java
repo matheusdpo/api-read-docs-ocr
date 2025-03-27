@@ -2,7 +2,6 @@ package com.lumen.auth.v1.controller;
 
 import com.lumen.auth.v1.entities.ApiKeyEntity;
 import com.lumen.auth.v1.entities.UserEntity;
-import com.lumen.auth.v1.enums.ApiKeyStatusEnum;
 import com.lumen.auth.v1.repositories.ApiKeyRepository;
 import com.lumen.auth.v1.repositories.UserRepository;
 import com.lumen.auth.v1.utils.JwtUtils;
@@ -90,7 +89,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserEntity userEntity) {
         //check if user already exists
-        if (userRepository.findByUsername(userEntity.getUsername()).isPresent()) {
+        if (userRepository.findByUserName(userEntity.getUserName()).isPresent()) {
             return ResponseEntity.status(400).body("Usuário já existe!");
         }
 
@@ -109,8 +108,8 @@ public class AuthController {
         userRepository.save(userEntity);
 
         //generate JWT token
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getUsername());
-        final String jwt = jwtUtils.generateToken(userDetails);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getUserName());
+        String jwt = jwtUtils.generateToken(userDetails);
 
         //return JWT token
         return ResponseEntity.ok(jwt);
@@ -130,12 +129,12 @@ public class AuthController {
             //authenticate user with username and password provided in the request body
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            userEntity.getUsername(), userEntity.getPassword()
+                            userEntity.getUserName(), userEntity.getPassword()
                     )
             );
 
             //generate JWT token for the user and return it in the response body
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getUsername());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getUserName());
             String jwt = jwtUtils.generateToken(userDetails);
 
             return ResponseEntity.ok(jwt);
@@ -172,10 +171,10 @@ public class AuthController {
         String username = jwtUtils.extractUsername(jwtToken);
 
         //find user by username
-        UserEntity userEntity = userRepository.findByUsername(username)
+        UserEntity userEntity = userRepository.findByUserName(username)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        List<ApiKeyEntity> apiKeyEntityList = apiKeyRepository.findByUserEntityAndStatusKey(userEntity, ApiKeyStatusEnum.ONLINE.getStatusApiKey());
+        List<ApiKeyEntity> apiKeyEntityList = apiKeyRepository.findByUserEntityAndStatusKey(userEntity, true);
 
         if (apiKeyEntityList.size() >= 5) {
             return ResponseEntity.status(400).body("Your account already has 5 API keys. Please delete one before creating a new one.");
@@ -204,7 +203,7 @@ public class AuthController {
     public ResponseEntity<String> deleteApiKey(@PathVariable String key) {
         //delete API key by key
 //        apiKeyRepository.deleteById(key);
-        apiKeyRepository.updateStatusKey(key, ApiKeyStatusEnum.OFFLINE.getStatusApiKey());
+        apiKeyRepository.updateStatusKey(key, false);
 
         //return success message
         return ResponseEntity.ok("API Key has been deleted successfully");
@@ -224,9 +223,9 @@ public class AuthController {
         String username = jwtUtils.extractUsername(token.substring(7));
 
         //find user by username
-        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow();
+        UserEntity userEntity = userRepository.findByUserName(username).orElseThrow();
 
         //return list of API keys for the user
-        return ResponseEntity.ok(apiKeyRepository.findAllByUserEntityAndStatusKey(userEntity, ApiKeyStatusEnum.ONLINE.getStatusApiKey()));
+        return ResponseEntity.ok(apiKeyRepository.findAllByUserEntityAndStatusKey(userEntity, true));
     }
 }
