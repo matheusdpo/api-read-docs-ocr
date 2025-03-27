@@ -3,8 +3,10 @@ package com.lumen.api.v1.repositories;
 import com.lumen.api.v1.entities.RequestLogsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public interface RequestLogsRepository extends JpaRepository<RequestLogsEntity, Long> {
 
     @Transactional
