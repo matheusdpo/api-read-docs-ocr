@@ -14,10 +14,10 @@ public class EmailService {
     @Value("${rabbitmq.exchange.name}")
     private String exchangeName;
 
-    @Value("${rabbitmq.routing.key.invoice}")
+    @Value("${rabbitmq.routingkey.invoice}")
     private String routingKeyInvoice;
 
-    @Value("${rabbitmq.routing.key.reminder}")
+    @Value("${rabbitmq.routingkey.reminder}")
     private String routingKeyReminder;
 
     @Autowired
