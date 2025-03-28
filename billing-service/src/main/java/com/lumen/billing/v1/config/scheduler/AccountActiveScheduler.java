@@ -1,4 +1,4 @@
-package com.lumen.billing.v1.config.schedulers;
+package com.lumen.billing.v1.config.scheduler;
 
 import com.lumen.billing.v1.services.BillingService;
 import jakarta.transaction.Transactional;
