@@ -115,6 +115,8 @@ public class PayPalController {
 
             paymentsRepository.save(paymentRecord);
 
+            //todo send mail to user about payment success
+
             return ResponseEntity.ok().body(payment.getState());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -137,6 +139,8 @@ public class PayPalController {
         paymentRecord.setPaymentStatus(PaymentStatusEnum.CANCELLED.getPaymentStatus());
         paymentRecord.setProcessingDate(LocalDateTime.now());
         paymentsRepository.save(paymentRecord);
+
+        //todo send mail to user about payment cancellation
 
         return ResponseEntity.ok().body("Payment cancelled");
     }
