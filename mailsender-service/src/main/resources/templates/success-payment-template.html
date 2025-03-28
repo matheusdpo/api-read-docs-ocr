@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Confirmation from CompanyName</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #28A745;
+            --primary-light: #E8F8EE;
+            --secondary: #FF9900;
+            --dark: #1A1A1A;
+            --light: #F8F9FA;
+            --success: #28A745;
+            --danger: #DC3545;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #F5F7FA;
+            margin: 0;
+            padding: 0;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1E7E34 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .payment-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: var(--box-shadow);
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+
+        .checkmark {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .checkmark svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--primary);
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #E0E0E0, transparent);
+            margin: 25px 0;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary);
+            color: white !important;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
+        }
+
+        .button:hover {
+            background: #1E7E34;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .social-icons {
+            margin: 15px 0;
+        }
+
+        .social-icon {
+            display: inline-block;
+            margin: 0 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            text-align: center;
+            line-height: 36px;
+            transition: var(--transition);
+        }
+
+        .social-icon:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .highlight {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        @media (max-width: 600px) {
+            .content, .header, .footer {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <img src="https://yourcompany.com/logo.png" alt="Company Logo" class="logo">
+        <h1>Payment Confirmed!</h1>
+    </div>
+
+    <div class="content">
+        <p>Hello <span class="highlight" th:text="${clientName}">Client</span>,</p>
+
+        <div class="payment-card">
+            <div class="checkmark">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+            </div>
+
+            <h2 style="margin-top: 0;">Payment Successful</h2>
+            <p>We've received your payment for invoice <span class="highlight" th:text="${invoiceNumber}">INV-123</span></p>
+
+            <div class="amount">$<span th:text="${amount}">100.00</span></div>
+
+            <div class="divider"></div>
+
+            <p><strong>Payment Date:</strong> <span th:text="${#dates.format(#dates.createNow(), 'MMMM d, yyyy')}">January 1, 2023</span></p>
+            <p><strong>Payment Method:</strong> Credit Card</p>
+            <p><strong>Transaction ID:</strong> TXN-<span th:text="${#strings.substring(#strings.replace(#strings.uuid, '-', ''), 0, 8)}">A1B2C3D4</span></p>
+        </div>
+
+        <p>A receipt has been generated and is attached to this email for your records.</p>
+
+        <center>
+            <a href="https://yourcompany.com/dashboard" class="button">View in Dashboard</a>
+        </center>
+
+        <p>Thank you for your prompt payment! We appreciate your business.</p>
+
+        <p>Best regards,<br><strong>The Team at CompanyName</strong></p>
+    </div>
+
+    <div class="footer">
+        <div class="social-icons">
+            <a href="#" class="social-icon">FB</a>
+            <a href="#" class="social-icon">TW</a>
+            <a href="#" class="social-icon">IG</a>
+            <a href="#" class="social-icon">LI</a>
+        </div>
+
+        <p>© 2023 CompanyName. All rights reserved.</p>
+        <p>123 Business Avenue, Suite 100<br>New York, NY 10001, USA</p>
+    </div>
+</div>
+</body>
+</html>
