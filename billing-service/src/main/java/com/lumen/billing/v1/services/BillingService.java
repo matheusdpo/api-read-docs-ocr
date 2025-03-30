@@ -2,6 +2,7 @@ package com.lumen.billing.v1.services;
 
 import com.lumen.billing.v1.entities.InvoiceEntity;
 import com.lumen.billing.v1.entities.UserEntity;
+import com.lumen.billing.v1.enums.StatusBillingTypeEnum;
 import com.lumen.billing.v1.repositories.InvoiceEntityRepository;
 import com.lumen.billing.v1.repositories.PaymentsRepository;
 import com.lumen.billing.v1.repositories.RequestLogsRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -53,17 +55,17 @@ public class BillingService {
     }
 
     public void generateMonthlyInvoices() {
-        LocalDate invoiceDate = LocalDate.now();
-        LocalDate dueDate = invoiceDate.plusDays(7); // 10 dias para pagar
+        LocalDateTime invoiceDate = LocalDateTime.now();
+        LocalDateTime dueDate = invoiceDate.plusDays(7); // 10 dias para pagar
 
         List<UserEntity> activeUsers = userEntityRepository.findAllByActiveTrue();
 
         activeUsers.forEach(user -> {
             // Calcula uso da API no mês anterior
-            LocalDate startDate = invoiceDate.minusMonths(1).withDayOfMonth(1);
-            LocalDate endDate = invoiceDate.minusMonths(1).withDayOfMonth(invoiceDate.minusMonths(1).lengthOfMonth());
+            LocalDateTime startDate = invoiceDate.minusMonths(1).withDayOfMonth(1);
+            LocalDateTime endDate = invoiceDate.minusMonths(1).withDayOfMonth(invoiceDate.minusMonths(1).toLocalDate().lengthOfMonth());
 
-            int totalRequests = requestLogsRepository.countByUserIdAndRequestDateBetween(user.getId(), startDate.toString(), endDate.toString());
+            int totalRequests = requestLogsRepository.countByUserIdAndRequestDateBetween(user.getId(), startDate, endDate);
 
             BigDecimal totalAmount = calculateUsageAmount(totalRequests);
 
@@ -72,8 +74,10 @@ public class BillingService {
             invoice.setIssueDate(invoiceDate);
             invoice.setDueDate(dueDate);
             invoice.setAmount(totalAmount);
+            invoice.setTotalAmount(totalAmount);
             invoice.setPaid(false);
             invoice.setLate(false);
+            invoice.setInvoiceType(StatusBillingTypeEnum.PAY_AS_YOU_GO);
 
             invoiceEntityRepository.save(invoice);
 
@@ -82,7 +86,7 @@ public class BillingService {
     }
 
     public void processOverduePayments() {
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = LocalDateTime.now().plusDays(7);
 
         // Busca faturas não pagas com vencimento anterior a hoje
         List<InvoiceEntity> overdueInvoices = invoiceEntityRepository.findByIsPaidFalseAndDueDateBefore(today);
@@ -120,7 +124,7 @@ public class BillingService {
     }
 
     private BigDecimal calculateOverdueAmount(InvoiceEntity invoice) {
-        long daysLate = ChronoUnit.DAYS.between(invoice.getDueDate(), LocalDate.now());
+        long daysLate = ChronoUnit.DAYS.between(invoice.getDueDate(), LocalDateTime.now());
 
         // Multa de 2% após 5 dias
         BigDecimal fine = daysLate > 5 ?

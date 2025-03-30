@@ -2,6 +2,7 @@ package com.lumen.mailsender.v1.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class InvoiceMessageModel {
     private String name;
@@ -9,7 +10,7 @@ public class InvoiceMessageModel {
     private String email;
     private BigDecimal totalAmount;
     private String description;
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
     private String invoiceNumber;
 
     public String getName() {
@@ -52,11 +53,11 @@ public class InvoiceMessageModel {
         this.description = description;
     }
 
-    public LocalDate getDueDate() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 

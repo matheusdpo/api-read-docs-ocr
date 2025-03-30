@@ -4,6 +4,7 @@ import com.lumen.billing.v1.enums.StatusBillingTypeEnum;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -22,13 +23,13 @@ public class InvoiceEntity {
     private UserEntity user;
 
     @Column(name = "issue_date", nullable = false)
-    private LocalDate issueDate;
+    private LocalDateTime issueDate;
 
     @Column(name = "due_date", nullable = false)
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
 
     @Column(name = "paid_date")
-    private LocalDate paidDate;
+    private LocalDateTime paidDate;
 
     @Column(name = "amount", nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
@@ -85,27 +86,27 @@ public class InvoiceEntity {
         this.user = user;
     }
 
-    public LocalDate getIssueDate() {
+    public LocalDateTime getIssueDate() {
         return issueDate;
     }
 
-    public void setIssueDate(LocalDate issueDate) {
+    public void setIssueDate(LocalDateTime issueDate) {
         this.issueDate = issueDate;
     }
 
-    public LocalDate getDueDate() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 
-    public LocalDate getPaidDate() {
+    public LocalDateTime getPaidDate() {
         return paidDate;
     }
 
-    public void setPaidDate(LocalDate paidDate) {
+    public void setPaidDate(LocalDateTime paidDate) {
         this.paidDate = paidDate;
     }
 
