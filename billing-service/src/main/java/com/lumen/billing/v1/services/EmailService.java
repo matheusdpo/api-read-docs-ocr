@@ -3,6 +3,7 @@ package com.lumen.billing.v1.services;
 import com.lumen.billing.v1.entities.InvoiceEntity;
 import com.lumen.billing.v1.entities.UserEntity;
 import com.lumen.billing.v1.models.InvoiceMessageModel;
+import com.lumen.billing.v1.utils.LogUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,9 @@ public class EmailService {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private LogUtils logger;
+
     //sendInvoice
     public void sendInvoice(UserEntity user, InvoiceEntity invoiceEntity) {
         InvoiceMessageModel invoiceMessageModel = invoiceMessageModelBuilder(user, invoiceEntity);
@@ -38,7 +42,7 @@ public class EmailService {
     }
 
     private InvoiceMessageModel invoiceMessageModelBuilder(UserEntity user, InvoiceEntity invoiceEntity) {
-        InvoiceMessageModel invoiceMessageModel = invoiceMessageModelBuilder(user, invoiceEntity);
+        InvoiceMessageModel invoiceMessageModel = new InvoiceMessageModel();
 
         invoiceMessageModel.setName(user.getName());
         invoiceMessageModel.setLastName(user.getLastName());
