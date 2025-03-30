@@ -6,7 +6,9 @@ import com.lumen.mailsender.v1.utils.LogUtils;
 import jakarta.mail.MessagingException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EmailListener {
 
     @Autowired
@@ -15,7 +17,7 @@ public class EmailListener {
     @Autowired
     private LogUtils logger;
 
-    @RabbitListener(queues = "rabbitmq.queue.invoice")
+    @RabbitListener(queues = "invoice")
     public void sendEmailInvoice(InvoiceMessageModel invoiceMessageModel) {
         try {
             emailService.sendMailInvoice(invoiceMessageModel);
@@ -24,7 +26,7 @@ public class EmailListener {
         }
     }
 
-    @RabbitListener(queues = "rabbitmq.queue.reminder")
+    @RabbitListener(queues = "reminder")
     public void sendEmailReminder(InvoiceMessageModel invoiceMessageModel) throws MessagingException {
         try {
             emailService.sendMailReminder(invoiceMessageModel);
