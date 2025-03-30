@@ -17,7 +17,7 @@ public class LogUtils {
     /**
      * Logger instance
      */
-    private Logger logger = LoggerFactory.getLogger("API-OCR");
+    private Logger logger = LoggerFactory.getLogger("auth");
 
 
     /**

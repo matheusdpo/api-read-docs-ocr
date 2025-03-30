@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogUtils {
 
-    private Logger logger = LoggerFactory.getLogger("PAYPAL");
+    private Logger logger = LoggerFactory.getLogger("paypal");
 
 
     public void info(String message) {

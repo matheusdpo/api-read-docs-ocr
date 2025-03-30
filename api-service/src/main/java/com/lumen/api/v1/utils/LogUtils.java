@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogUtils {
 
-    private Logger logger = LoggerFactory.getLogger("API-OCR");
+    private Logger logger = LoggerFactory.getLogger("api-ocr");
 
 
     public void info(String message) {
