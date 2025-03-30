@@ -4,6 +4,7 @@ import com.lumen.billing.v1.services.BillingService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -17,18 +18,21 @@ public class AccountActiveScheduler {
     @Autowired
     private BillingService billingService;
 
+    @Async
     @Scheduled(cron = DEACTIVATION_CRON)
     @Transactional
     public void checkActiveAccounts() {
         billingService.checkUsersWithOverduePayment();
     }
 
+    @Async
     @Scheduled(cron = INVOICE_CRON)
     @Transactional
     public void generateInvoices() {
         billingService.generateMonthlyInvoices();
     }
 
+    @Async
     @Scheduled(cron = OVERDUE_CRON)
     @Transactional
     public void checkOverdueInvoices() {
