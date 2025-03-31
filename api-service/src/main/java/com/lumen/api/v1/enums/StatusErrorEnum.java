@@ -13,7 +13,8 @@ public enum StatusErrorEnum {
     API_KEY_IS_NOT_VALID(8, "API Key is not valid"),
     FILE_IS_EMPTY(9, "File is empty"),
     FILE_SIZE_IS_NOT_VALID(10, "File size is not valid"),
-    FILE_EXTENSION_IS_NOT_VALID(11, "File extension is not valid");
+    FILE_EXTENSION_IS_NOT_VALID(11, "File extension is not valid"),
+    USER_INACTIVE(12, "User is not active");
 
     StatusErrorEnum(Integer id, String errorMessage) {
         this.id = id;
