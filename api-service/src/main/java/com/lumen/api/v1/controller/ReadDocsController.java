@@ -51,9 +51,6 @@ public class ReadDocsController {
 
     private static final String ENDPOINT = "/api/v1/read-docs";
 
-    @Autowired
-    private UserEntityRepository userEntityRepository;
-
     @PostMapping("/read-docs")
     public ResponseEntity<?> init(@RequestHeader(value = "X-API-KEY", required = false) String apiKey,
                                   @RequestPart("file") @NotNull MultipartFile file,
