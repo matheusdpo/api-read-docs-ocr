@@ -1,6 +1,8 @@
 package com.lumen.api.v1.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.lumen.api.v1.entities.ApiKeyEntity;
+import com.lumen.api.v1.entities.UserEntity;
 import com.lumen.api.v1.enums.StatusErrorEnum;
 import com.lumen.api.v1.models.responses.api.ResponseErrorApiModel;
 import com.lumen.api.v1.services.ApiKeyService;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/v1")
@@ -58,8 +61,16 @@ public class OcrController {
                 return buildErrorResponse(StatusErrorEnum.API_KEY_IS_REQUIRED, HttpStatus.BAD_REQUEST);
             }
 
+            Optional<ApiKeyEntity> apiKeyEntity = apiKeyService.findByKey(apiKey);
+
             if (!apiKeyService.isApiKeyValid(apiKey)) {
                 return buildErrorResponse(StatusErrorEnum.API_KEY_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+            }
+
+            UserEntity userEntity = apiKeyEntity.get().getUserEntity();
+
+            if (!userEntity.isActive()) {
+                return buildErrorResponse(StatusErrorEnum.USER_INACTIVE, HttpStatus.BAD_REQUEST);
             }
 
             if (file.isEmpty()) {

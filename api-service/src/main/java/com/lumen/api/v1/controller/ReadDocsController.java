@@ -1,6 +1,8 @@
 package com.lumen.api.v1.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.lumen.api.v1.entities.ApiKeyEntity;
+import com.lumen.api.v1.entities.UserEntity;
 import com.lumen.api.v1.enums.CountriesEnum;
 import com.lumen.api.v1.enums.DocumentTypeEnum;
 import com.lumen.api.v1.enums.StatusErrorEnum;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/v1")
@@ -48,6 +51,9 @@ public class ReadDocsController {
 
     private static final String ENDPOINT = "/api/v1/read-docs";
 
+    @Autowired
+    private UserEntityRepository userEntityRepository;
+
     @PostMapping("/read-docs")
     public ResponseEntity<?> init(@RequestHeader(value = "X-API-KEY", required = false) String apiKey,
                                   @RequestPart("file") @NotNull MultipartFile file,
@@ -60,8 +66,16 @@ public class ReadDocsController {
                 return buildErrorResponse(StatusErrorEnum.API_KEY_IS_REQUIRED, HttpStatus.BAD_REQUEST);
             }
 
+            Optional<ApiKeyEntity> apiKeyEntity = apiKeyService.findByKey(apiKey);
+
             if (!apiKeyService.isApiKeyValid(apiKey)) {
                 return buildErrorResponse(StatusErrorEnum.API_KEY_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+            }
+
+            UserEntity userEntity = apiKeyEntity.get().getUserEntity();
+
+            if (!userEntity.isActive()) {
+                return buildErrorResponse(StatusErrorEnum.USER_INACTIVE, HttpStatus.BAD_REQUEST);
             }
 
             if (file.isEmpty()) {
