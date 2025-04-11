@@ -1,13 +1,13 @@
 package com.lumen.paypal.v1.controller;
 
-import com.lumen.paypal.v1.entities.PaymentsEntity;
-import com.lumen.paypal.v1.entities.UserEntity;
-import com.lumen.paypal.v1.enums.PaymentStatusEnum;
-import com.lumen.paypal.v1.exceptions.PayPalServiceException;
-import com.lumen.paypal.v1.repositories.PaymentsRepository;
-import com.lumen.paypal.v1.repositories.UserRepository;
+import com.lumen.commons.enums.PaymentStatusEnum;
+import com.lumen.commons.exceptions.PayPalServiceException;
+import com.lumen.commons.models.entities.PaymentsEntity;
+import com.lumen.commons.models.entities.UserEntity;
+import com.lumen.commons.repositories.PaymentsRepository;
+import com.lumen.commons.repositories.UserEntityRepository;
+import com.lumen.commons.utils.LogUtils;
 import com.lumen.paypal.v1.services.PayPalService;
-import com.lumen.paypal.v1.utils.LogUtils;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class PayPalController {
     private PaymentsRepository paymentsRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserEntityRepository userRepository;
 
     @Autowired
     private LogUtils logger;

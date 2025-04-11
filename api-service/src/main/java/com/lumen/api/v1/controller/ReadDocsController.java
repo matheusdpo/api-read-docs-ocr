@@ -1,20 +1,17 @@
 package com.lumen.api.v1.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.lumen.api.v1.entities.ApiKeyEntity;
-import com.lumen.api.v1.entities.UserEntity;
-import com.lumen.api.v1.enums.CountriesEnum;
-import com.lumen.api.v1.enums.DocumentTypeEnum;
-import com.lumen.api.v1.enums.StatusErrorEnum;
-import com.lumen.api.v1.models.responses.api.ResponseErrorApiModel;
-import com.lumen.api.v1.services.ApiKeyService;
 import com.lumen.api.v1.services.DocumentService;
 import com.lumen.api.v1.services.LumenAPIService;
 import com.lumen.api.v1.services.RequestLogsService;
-import com.lumen.api.v1.utils.Base64Utils;
-import com.lumen.api.v1.utils.LogUtils;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import com.lumen.commons.enums.CountriesEnum;
+import com.lumen.commons.enums.DocumentTypeEnum;
+import com.lumen.commons.enums.StatusErrorEnum;
+import com.lumen.commons.models.entities.ApiKeyEntity;
+import com.lumen.commons.models.entities.UserEntity;
+import com.lumen.commons.services.ApiKeyService;
+import com.lumen.commons.utils.Base64Utils;
+import com.lumen.commons.utils.LogUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -53,50 +50,50 @@ public class ReadDocsController {
 
     @PostMapping("/read-docs")
     public ResponseEntity<?> init(@RequestHeader(value = "X-API-KEY", required = false) String apiKey,
-                                  @RequestPart("file") @NotNull MultipartFile file,
-                                  @RequestParam("country") @NotNull @NotEmpty String country,
-                                  @RequestParam("docType") @NotNull @NotEmpty String docType) {
+                                  @RequestPart("file") MultipartFile file,
+                                  @RequestParam("country") String country,
+                                  @RequestParam("docType") String docType) {
         LocalDateTime requestDate = LocalDateTime.now();
 
         try {
             if (Objects.isNull(apiKey) || apiKey.isBlank()) {
-                return buildErrorResponse(StatusErrorEnum.API_KEY_IS_REQUIRED, HttpStatus.BAD_REQUEST);
+                throw new IllegalArgumentException(StatusErrorEnum.API_KEY_IS_REQUIRED.getError());
             }
 
             Optional<ApiKeyEntity> apiKeyEntity = apiKeyService.findByKey(apiKey);
 
             if (!apiKeyService.isApiKeyValid(apiKey)) {
-                return buildErrorResponse(StatusErrorEnum.API_KEY_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+                throw new IllegalArgumentException(StatusErrorEnum.API_KEY_IS_NOT_VALID.getError());
             }
 
             UserEntity userEntity = apiKeyEntity.get().getUserEntity();
 
             if (!userEntity.isActive()) {
-                return buildErrorResponse(StatusErrorEnum.USER_INACTIVE, HttpStatus.BAD_REQUEST);
+                throw new IllegalArgumentException(StatusErrorEnum.USER_INACTIVE.getError());
             }
 
             if (file.isEmpty()) {
-                return buildErrorResponse(StatusErrorEnum.FILE_IS_EMPTY, HttpStatus.BAD_REQUEST);
+                throw new IllegalArgumentException(StatusErrorEnum.FILE_IS_EMPTY.getError());
             }
 
             if (!CountriesEnum.isCountryEqualsEnum(country)) {
-                return buildErrorResponse(StatusErrorEnum.COUNTRY_IS_NOT_AVAILABLE, HttpStatus.BAD_REQUEST);
+                throw new IllegalArgumentException(StatusErrorEnum.COUNTRY_IS_NOT_AVAILABLE.getError());
             }
 
             if (!DocumentTypeEnum.isDocumentEqualsEnum(docType)) {
-                return buildErrorResponse(StatusErrorEnum.DOC_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+                throw new IllegalArgumentException(StatusErrorEnum.DOC_IS_NOT_VALID.getError());
             }
 
             if (!documentService.isDocumentTypeAndCountry(docType, country)) {
-                return buildErrorResponse(StatusErrorEnum.DOC_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+                throw new IllegalArgumentException(StatusErrorEnum.DOC_IS_NOT_VALID.getError());
             }
 
             if (!documentService.isDocumentSizeValid(file.getSize())) {
-                return buildErrorResponse(StatusErrorEnum.FILE_SIZE_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+                throw new IllegalArgumentException(StatusErrorEnum.FILE_SIZE_IS_NOT_VALID.getError());
             }
 
             if (!documentService.isExtensionValid(file.getOriginalFilename())) {
-                return buildErrorResponse(StatusErrorEnum.FILE_EXTENSION_IS_NOT_VALID, HttpStatus.BAD_REQUEST);
+                throw new IllegalArgumentException(StatusErrorEnum.FILE_EXTENSION_IS_NOT_VALID.getError());
             }
 
             String imageBase64 = base64Utils.encode(file);
@@ -104,7 +101,7 @@ public class ReadDocsController {
             String mimeType = file.getContentType();
 
             if (imageBase64.isEmpty()) {
-                return buildErrorResponse(StatusErrorEnum.BASE64_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new IllegalArgumentException(StatusErrorEnum.BASE64_ERROR.getError());
             }
 
             JsonNode response = lumenAPIService.getReadDocsResponseBody(
@@ -133,13 +130,7 @@ public class ReadDocsController {
                     httpStatusCode,
                     requestDate
             );
-            return buildErrorResponse(StatusErrorEnum.UNKOWN_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(StatusErrorEnum.UNKOWN_ERROR.getError());
         }
-    }
-
-    private ResponseEntity<ResponseErrorApiModel> buildErrorResponse(StatusErrorEnum error, HttpStatus status) {
-        return ResponseEntity
-                .status(status)
-                .body(new ResponseErrorApiModel(error.getId(), error.getError()));
     }
 }
