@@ -1,12 +1,14 @@
 package com.lumen.api.v1.services;
 
+import com.lumen.commons.exceptions.GeminiException;
+import com.lumen.commons.exceptions.SerializationUtilsException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.lumen.api.v1.exceptions.GeminiException;
-import com.lumen.api.v1.models.ResponseOcrModel;
+import com.lumen.api.v1.models.responses.api.ResponseOcrModel;
 import com.lumen.api.v1.models.responses.api.ResponseCheckSignatureModel;
 import com.lumen.api.v1.models.responses.gemini.GeminiResponse;
-import com.lumen.api.v1.utils.SerializationUtils;
-import com.lumen.api.v1.utils.StringUtils;
+import com.lumen.commons.utils.SerializationUtils;
+import com.lumen.commons.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,7 @@ public class LumenAPIService {
     @Autowired
     private StringUtils stringUtils;
 
-    public JsonNode getReadDocsResponseBody(String base64, String docType, String mimeType, String country) throws Exception {
+    public JsonNode getReadDocsResponseBody(String base64, String docType, String mimeType, String country) throws GeminiException, SerializationUtilsException, JsonProcessingException {
         String docTypeModel = "Document" + docType + stringUtils.toCamelCase(country);
 
         if (!isClassExists(docTypeModel)) {
@@ -80,7 +82,7 @@ public class LumenAPIService {
     }
 
 
-    public JsonNode getOcrResponseBody(String base64, String mimeType) throws Exception {
+    public JsonNode getOcrResponseBody(String base64, String mimeType) throws SerializationUtilsException, JsonProcessingException {
         ResponseOcrModel responseCheckSignatureModel = new ResponseOcrModel();
 
         String prompt = String.format(geminiService.getGeminiApiOcrPrompt(), responseCheckSignatureModel.toString());

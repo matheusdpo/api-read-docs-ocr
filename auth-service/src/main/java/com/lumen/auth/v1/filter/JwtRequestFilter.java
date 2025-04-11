@@ -1,8 +1,8 @@
 package com.lumen.auth.v1.filter;
 
-import com.lumen.auth.v1.services.ApiKeyService;
 import com.lumen.auth.v1.services.CustomUserDetailsService;
-import com.lumen.auth.v1.utils.JwtUtils;
+import com.lumen.auth.v1.utils.jwt.JwtUtils;
+import com.lumen.commons.services.ApiKeyService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

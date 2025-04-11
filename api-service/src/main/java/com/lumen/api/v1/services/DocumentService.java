@@ -1,7 +1,7 @@
 package com.lumen.api.v1.services;
 
-import com.lumen.api.v1.entities.DocumentDBEntity;
-import com.lumen.api.v1.repositories.DocumentDBRepository;
+import com.lumen.commons.models.entities.DocumentDBEntity;
+import com.lumen.commons.repositories.DocumentDBRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

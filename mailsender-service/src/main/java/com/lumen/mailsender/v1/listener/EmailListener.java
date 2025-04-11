@@ -1,8 +1,8 @@
 package com.lumen.mailsender.v1.listener;
 
+import com.lumen.commons.utils.LogUtils;
 import com.lumen.mailsender.v1.models.InvoiceMessageModel;
 import com.lumen.mailsender.v1.service.EmailService;
-import com.lumen.mailsender.v1.utils.LogUtils;
 import jakarta.mail.MessagingException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;

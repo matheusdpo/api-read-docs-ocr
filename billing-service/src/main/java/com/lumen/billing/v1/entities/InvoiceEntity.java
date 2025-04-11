@@ -1,9 +1,9 @@
 package com.lumen.billing.v1.entities;
 
 import com.lumen.billing.v1.enums.StatusBillingTypeEnum;
+import com.lumen.commons.models.entities.UserEntity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 

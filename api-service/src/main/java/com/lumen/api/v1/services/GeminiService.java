@@ -1,7 +1,8 @@
 package com.lumen.api.v1.services;
 
-import com.lumen.api.v1.utils.HttpUnirestUtils;
-import com.lumen.api.v1.utils.JsonUtils;
+import com.lumen.commons.exceptions.SerializationUtilsException;
+import com.lumen.commons.utils.HttpUnirestUtils;
+import com.lumen.commons.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class GeminiService {
     @Autowired
     private JsonUtils jsonUtils;
 
-    public String getResponseBodyStr(String base64, String prompt, String mimeType) throws Exception {
+    public String getResponseBodyStr(String base64, String prompt, String mimeType) throws SerializationUtilsException {
         String body = jsonUtils.jsonGeminiBuilder(base64, prompt, mimeType);
         return httpUnirestUtils.post(geminiApiUrl, geminiApiKey, body).getBody();
     }

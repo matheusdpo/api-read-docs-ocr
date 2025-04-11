@@ -1,9 +1,10 @@
 package com.lumen.api.v1.services;
 
-import com.lumen.api.v1.entities.ApiKeyEntity;
-import com.lumen.api.v1.entities.RequestLogsEntity;
-import com.lumen.api.v1.entities.UserEntity;
-import com.lumen.api.v1.repositories.RequestLogsRepository;
+import com.lumen.commons.models.entities.ApiKeyEntity;
+import com.lumen.commons.models.entities.RequestLogsEntity;
+import com.lumen.commons.models.entities.UserEntity;
+import com.lumen.commons.repositories.RequestLogsRepository;
+import com.lumen.commons.services.ApiKeyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -43,11 +44,11 @@ public class RequestLogsService {
         requestLogsRepository.save(requestLogsEntity);
     }
 
-    public int countByApiKeyAndRequestDateBetween(String key, String startDate, String endDate) {
+    public int countByApiKeyAndRequestDateBetween(String key, LocalDateTime startDate, LocalDateTime endDate) {
         return requestLogsRepository.countByApiKeyAndRequestDateBetween(key, startDate, endDate);
     }
 
-    public int countByUserIdAndRequestDateBetween(Long userId, String startDate, String endDate) {
+    public int countByUserIdAndRequestDateBetween(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
         return requestLogsRepository.countByUserIdAndRequestDateBetween(userId, startDate, endDate);
     }
 }

@@ -1,12 +1,12 @@
 package com.lumen.billing.v1.services;
 
 import com.lumen.billing.v1.entities.InvoiceEntity;
-import com.lumen.billing.v1.entities.UserEntity;
 import com.lumen.billing.v1.enums.StatusBillingTypeEnum;
 import com.lumen.billing.v1.repositories.InvoiceEntityRepository;
-import com.lumen.billing.v1.repositories.PaymentsRepository;
-import com.lumen.billing.v1.repositories.RequestLogsRepository;
-import com.lumen.billing.v1.repositories.UserEntityRepository;
+import com.lumen.commons.models.entities.UserEntity;
+import com.lumen.commons.repositories.PaymentsRepository;
+import com.lumen.commons.repositories.RequestLogsRepository;
+import com.lumen.commons.repositories.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

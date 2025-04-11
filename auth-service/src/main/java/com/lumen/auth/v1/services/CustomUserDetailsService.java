@@ -1,9 +1,9 @@
 package com.lumen.auth.v1.services;
 
-
-import com.lumen.auth.v1.entities.UserEntity;
-import com.lumen.auth.v1.repositories.UserRepository;
+import com.lumen.commons.models.entities.UserEntity;
+import com.lumen.commons.repositories.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      * User repository to access the database.
      */
     @Autowired
-    private UserRepository userRepository;
+    private UserEntityRepository userEntityRepository;
 
     /**
      * Method that loads user data from the database.
@@ -32,10 +32,10 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByUserName(username)
+        UserEntity userEntity = userEntityRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        return new org.springframework.security.core.userdetails.User(
+        return new User(
                 userEntity.getUserName(),
                 userEntity.getPassword(),
                 userEntity.getAuthorities()

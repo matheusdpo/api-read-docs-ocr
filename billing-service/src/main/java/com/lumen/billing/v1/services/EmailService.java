@@ -1,9 +1,9 @@
 package com.lumen.billing.v1.services;
 
 import com.lumen.billing.v1.entities.InvoiceEntity;
-import com.lumen.billing.v1.entities.UserEntity;
 import com.lumen.billing.v1.models.InvoiceMessageModel;
-import com.lumen.billing.v1.utils.LogUtils;
+import com.lumen.commons.models.entities.UserEntity;
+import com.lumen.commons.utils.LogUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
