@@ -1,11 +1,12 @@
 package com.lumen.auth.v1.controller;
 
-import com.lumen.auth.v1.entities.ApiKeyEntity;
-import com.lumen.auth.v1.entities.UserEntity;
-import com.lumen.auth.v1.repositories.ApiKeyRepository;
-import com.lumen.auth.v1.repositories.UserRepository;
-import com.lumen.auth.v1.utils.JwtUtils;
-import com.lumen.auth.v1.utils.LogUtils;
+import com.lumen.auth.v1.utils.jwt.JwtUtils;
+import com.lumen.commons.enums.StatusErrorEnum;
+import com.lumen.commons.models.entities.ApiKeyEntity;
+import com.lumen.commons.models.entities.UserEntity;
+import com.lumen.commons.repositories.ApiKeyRepository;
+import com.lumen.commons.repositories.UserEntityRepository;
+import com.lumen.commons.utils.LogUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,7 +59,7 @@ public class AuthController {
      * User Repository
      */
     @Autowired
-    private UserRepository userRepository;
+    private UserEntityRepository userRepository;
 
     /**
      * API Key Repository
@@ -90,17 +91,17 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody UserEntity userEntity) {
         //check if user already exists
         if (userRepository.findByUserName(userEntity.getUserName()).isPresent()) {
-            return ResponseEntity.status(400).body("Usuário já existe!");
+            throw new IllegalArgumentException(StatusErrorEnum.USER_EXIST.getError());
         }
 
         //check if email already exists
         if (userRepository.findByEmail(userEntity.getEmail()).isPresent()) {
-            return ResponseEntity.status(400).body("Email já cadastrado!");
+            throw new IllegalArgumentException(StatusErrorEnum.EMAIL_EXIST.getError());
         }
 
         //check if phone already exists
         if (userRepository.findByPhone(userEntity.getPhone()).isPresent()) {
-            return ResponseEntity.status(400).body("Telefone já cadastrado!");
+            throw new IllegalArgumentException(StatusErrorEnum.PHONE_EXIST.getError());
         }
 
         //encode password before saving
@@ -140,7 +141,7 @@ public class AuthController {
             return ResponseEntity.ok(jwt);
         } catch (Exception e) {
             logger.error("Falha na autenticação: " + e.getMessage());
-            return ResponseEntity.status(401).body("Falha na autenticação: " + e.getMessage());
+            throw new RuntimeException(StatusErrorEnum.UNKOWN_ERROR.getError());
         }
     }
 
@@ -156,7 +157,7 @@ public class AuthController {
     public ResponseEntity<String> createApiKey(@RequestHeader("Authorization") String token) {
         //check if token is valid
         if (Objects.isNull(token) || !token.startsWith("Bearer ")) {
-            return ResponseEntity.status(400).body("Token inválido ou ausente");
+            throw new IllegalArgumentException(StatusErrorEnum.TOKEN_INVALID.getError());
         }
 
         //remove Bearer prefix from token
@@ -164,7 +165,7 @@ public class AuthController {
 
         //validate token
         if (!jwtUtils.validateToken(jwtToken, userDetailsService.loadUserByUsername(jwtUtils.extractUsername(jwtToken)))) {
-            return ResponseEntity.status(400).body("Token JWT inválido");
+            throw new IllegalArgumentException(StatusErrorEnum.TOKEN_INVALID.getError());
         }
 
         //extract username from token
@@ -172,12 +173,12 @@ public class AuthController {
 
         //find user by username
         UserEntity userEntity = userRepository.findByUserName(username)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException(StatusErrorEnum.USER_NOT_FOUND.getError()));
 
         List<ApiKeyEntity> apiKeyEntityList = apiKeyRepository.findByUserEntityAndStatusKey(userEntity, true);
 
         if (apiKeyEntityList.size() >= 5) {
-            return ResponseEntity.status(400).body("Your account already has 5 API keys. Please delete one before creating a new one.");
+            throw new IllegalArgumentException(StatusErrorEnum.LIMIT_EXCEED.getError());
         }
 
         //generate random API key
